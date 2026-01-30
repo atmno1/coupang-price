@@ -11,123 +11,63 @@
         .search-input { width: 400px; padding: 15px 20px; border: 2px solid #ff6b35; border-radius: 30px; font-size: 16px; outline: none; }
         .search-btn { padding: 15px 30px; background: #ff6b35; color: white; border: none; border-radius: 30px; font-size: 16px; cursor: pointer; font-weight: bold; }
         .search-btn:hover { background: #e55a2b; }
-        .products { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-top: 30px; }
-        .product { background: white; border-radius: 15px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: transform 0.3s, box-shadow 0.3s; }
-        .product:hover { transform: translateY(-5px); box-shadow: 0 12px 30px rgba(0,0,0,0.15); }
-        .product-img { width: 100%; height: 180px; object-fit: cover; border-radius: 10px; }
-        .product-name { font-weight: 600; margin: 12px 0; line-height: 1.4; height: 3em; overflow: hidden; }
-        .price { font-size: 24px; font-weight: bold; color: #ff6b35; margin: 10px 0; }
-        .lowest { background: #28a745 !important; color: white !important; padding: 5px 12px; border-radius: 20px; font-size: 14px; }
-        .buy-btn { width: 100%; padding: 12px; background: linear-gradient(135deg, #ff6b35, #ff8c42); color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 12px; }
-        .buy-btn:hover { transform: scale(1.02); }
         .loading { text-align: center; font-size: 18px; color: #666; margin: 40px 0; }
+        .success-msg { text-align: center; background: #d4edda; color: #155724; padding: 20px; border-radius: 10px; margin: 20px 0; font-size: 18px; }
     </style>
 </head>
 <body>
     <div class="header">
         <h1>🛒 쿠팡 최저가 찾기</h1>
-        <p>원하는 상품 검색하면 자동으로 최저가 먼저 보여드려요!</p>
+        <p>키워드 입력하면 <strong>쿠팡 검색결과 페이지</strong>로 바로 이동!</p>
     </div>
     
     <div class="search-box">
         <input type="text" class="search-input" id="searchInput" placeholder="예: 갤럭시, 아이폰15, 에어팟">
-        <button class="search-btn" onclick="searchCoupang()">🔍 최저가 찾기</button>
+        <button class="search-btn" onclick="goToCoupangSearch()">🔍 쿠팡에서 최저가 찾기</button>
     </div>
     
-    <div id="loading" class="loading" style="display: none;">검색 중입니다... 잠시만요! ⏳</div>
-    <div id="products" class="products"></div>
+    <div id="loading" class="loading" style="display: none;">쿠팡 검색페이지로 이동합니다... 🚀</div>
+    <div id="success" class="success-msg" style="display: none;"></div>
 
     <script>
         // 🎯 당신의 쿠팡 파트너스 ID
         const MY_PARTNERS_ID = 'AF9782821';
         
-        async function searchCoupang() {
+        function goToCoupangSearch() {
             const keyword = document.getElementById('searchInput').value.trim();
-            if (!keyword) { alert('검색어를 입력해주세요!'); return; }
+            if (!keyword) { 
+                alert('검색어를 입력해주세요!'); 
+                return; 
+            }
             
             document.getElementById('loading').style.display = 'block';
-            document.getElementById('products').innerHTML = '';
+            document.getElementById('success').style.display = 'none';
             
-            try {
-                // 🔧 쿠팡 검색 페이지에서 직접 스크래핑 (CORS 우회)
-                const searchUrl = `https://www.coupang.com/np/search?q=${encodeURIComponent(keyword)}&channel=user`;
-                const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(searchUrl)}`);
-                const data = await response.json();
-                const html = new DOMParser().parseFromString(data.contents, 'text/html');
-                
-                // 상품 정보 추출 (쿠팡 구조 기반)
-                const products = [];
-                const items = html.querySelectorAll('.search-product');
-                items.forEach((item, index) => {
-                    const name = item.querySelector('.name')?.textContent || '상품명';
-                    const price = item.querySelector('.price-value')?.textContent || '가격정보없음';
-                    const image = item.querySelector('img')?.src || 'https://via.placeholder.com/300x180/eee/ccc?text=이미지없음';
-                    const productId = `coupang-${index}`; // 임시 ID
-                    
-                    products.push({ productName: name, nowPrice: price, imageUrl: image, productId, vendorName: '쿠팡' });
-                });
-                
-                // 실제 데이터 없을 때 더미 데이터로 테스트
-                if (products.length === 0) {
-                    showDemoProducts(keyword);
-                } else {
-                    showProducts(products.slice(0, 12));
-                }
-            } catch (error) {
-                console.log('API 에러, 데모 데이터 표시');
-                showDemoProducts(keyword);
-            } finally {
+            // 🎯 쿠팡 검색결과 페이지 + 파트너스 링크 완벽 조합
+            const coupangSearchUrl = `https://www.coupang.com/np/search?q=${encodeURIComponent(keyword)}&channel=user`;
+            
+            // 파트너스 링크로 감싸기 (당신의 AF9782821 자동 적용)
+            const partnerLink = `https://click.linksynergy.com/deeplink?id=${MY_PARTNERS_ID}&mid=53390&murl=${encodeURIComponent(coupangSearchUrl)}`;
+            
+            // 1.5초 후 자동 이동 (사용자에게 확인시간 제공)
+            setTimeout(() => {
                 document.getElementById('loading').style.display = 'none';
-            }
+                document.getElementById('success').innerHTML = `
+                    ✅ <strong>"${keyword}"</strong> 쿠팡 검색결과로 이동했습니다!<br>
+                    👇 수수료 발생하는 파트너스 링크 적용됨 (AF9782821)
+                `;
+                document.getElementById('success').style.display = 'block';
+                
+                // 새 탭에서 열기
+                window.open(partnerLink, '_blank');
+                
+                console.log(`✅ "${keyword}" → 쿠팡 파트너스 검색링크 활성화!`);
+            }, 1500);
         }
         
-        // 📱 데모 데이터 (검색 실패시에도 동작 보장)
-        function showDemoProducts(keyword) {
-            const demoProducts = [
-                { productName: `${keyword} 최저가 상품`, nowPrice: '1,234,567', imageUrl: 'https://images.coupang.com/i/coupang/artifical-description/iphone-placeholder.jpg', productId: 'demo1', vendorName: '쿠팡 로켓배송' },
-                { productName: `${keyword} 인기 상품`, nowPrice: '1,245,000', imageUrl: 'https://images.coupang.com/i/coupang/artifical-description/samsung-placeholder.jpg', productId: 'demo2', vendorName: '쿠팡 파트너' },
-                { productName: `${keyword} 할인 특가`, nowPrice: '1,189,999', imageUrl: 'https://images.coupang.com/i/coupang/artifical-description/deal-placeholder.jpg', productId: 'demo3', vendorName: '쿠팡 와우' }
-            ];
-            showProducts(demoProducts);
-        }
-        
-        function showProducts(products) {
-            const container = document.getElementById('products');
-            if (products.length === 0) {
-                container.innerHTML = '<div style="text-align:center;padding:60px;color:#666;">검색 결과가 없어요. 다른 키워드로 다시 검색해보세요! 🔄</div>';
-                return;
-            }
-            
-            const cheapest = products.reduce((min, p) => parseInt(p.nowPrice.replace(/,/g, '')) < parseInt(min.nowPrice.replace(/,/g, '')) ? p : min);
-            
-            container.innerHTML = products.map((product) => `
-                <div class="product">
-                    <img src="${product.imageUrl}" alt="${product.productName}" class="product-img" onerror="this.src='https://via.placeholder.com/300x180/eee/ccc?text=이미지없음'">
-                    <div class="product-name">${product.productName}</div>
-                    <div class="price ${product.productId === cheapest.productId ? 'lowest' : ''}">
-                        ${product.nowPrice}
-                        ${product.productId === cheapest.productId ? ' 🔥 최저가!' : ''}
-                    </div>
-                    <p style="color:#666;font-size:14px;margin:5px 0;">
-                        ${product.vendorName} | 로켓배송 🚀
-                    </p>
-                    <button class="buy-btn" onclick="buyNow('${product.productId}', '${product.productName}')">
-                        🛒 바로 구매하기 (파트너스 링크)
-                    </button>
-                </div>
-            `).join('');
-        }
-        
-        async function buyNow(productId, productName) {
-            // 🎯 쿠팡 파트너스 딥링크 (AF9782821 자동 적용)
-            const partnerLink = `https://click.linksynergy.com/deeplink?id=AF9782821&mid=53390&murl=https%3A%2F%2Fwww.coupang.com%2Fvp%2Fproducts%2F${productId}`;
-            window.open(partnerLink, '_blank');
-            console.log(`✅ ${productName} - 파트너스 링크 활성화!`);
-        }
-        
-        // 엔터키 검색
+        // 엔터키로 검색
         document.getElementById('searchInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') searchCoupang();
+            if (e.key === 'Enter') goToCoupangSearch();
         });
     </script>
 </body>
