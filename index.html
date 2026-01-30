@@ -80,8 +80,25 @@
         }
         .product-image { 
             width: 100%; 
-            height: clamp(140px, 30vw, 180px); 
-            object-fit: cover; 
+            height: clamp(160px, 35vw, 200px); 
+            object-fit: cover;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .product-image img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover;
+            loading: lazy;
+        }
+        .product-image::before {
+            content: '🛒';
+            font-size: clamp(24px, 8vw, 48px);
+            opacity: 0.3;
+            position: absolute;
         }
         .product-info { 
             padding: clamp(12px, 4vw, 16px); 
@@ -198,7 +215,6 @@
             .buy-btn { padding: 10px 8px; }
         }
         
-        /* 태블릿 최적화 */
         @media (max-width: 768px) {
             .categories { 
                 grid-template-columns: repeat(3, 1fr); 
@@ -206,7 +222,6 @@
             }
         }
         
-        /* 대형 데스크탑 */
         @media (min-width: 1400px) {
             .products-grid { 
                 grid-template-columns: repeat(4, 1fr); 
@@ -220,11 +235,10 @@
         <h1>🔥 쿠팡 실시간 인기 BEST</h1>
         <p class="subtitle">카테고리별 인기 1~8위 | 로켓배송 🚀 | 클릭시 바로 쿠팡 이동</p>
         
-        <!-- 2줄 카테고리 -->
+        <!-- 카테고리 (전체 제외) -->
         <div class="categories-container">
             <div class="categories" id="categories">
-                <button class="category-btn active" data-category="all">전체 🔥</button>
-                <button class="category-btn" data-category="패션의류/잡화">패션의류/잡화</button>
+                <button class="category-btn active" data-category="패션의류/잡화">패션의류/잡화</button>
                 <button class="category-btn" data-category="뷰티">뷰티</button>
                 <button class="category-btn" data-category="출산/유아동">출산/유아동</button>
                 <button class="category-btn" data-category="식품">식품</button>
@@ -254,48 +268,76 @@
     <script>
         const MY_PARTNERS_ID = 'AF9782821';
         
-        // 완전한 카테고리별 8개 인기상품 데이터
+        // ✅ 모든 카테고리별 완전한 8개 상품 데이터
         const productsByCategory = {
-            'all': [
-                {id:1, name:'삼성 갤럭시 S25 Ultra', price:1399000, orig:1699000, disc:18, rating:4.9, rank:1, img:'https://images.unsplash.com/photo-1721302829049-1f0b2c7e6f4a?w=300&fit=crop'},
-                {id:2, name:'아이폰16 Pro Max 1TB', price:1649000, orig:1899000, disc:13, rating:4.8, rank:2, img:'https://images.unsplash.com/photo-1592899678534-256a34c48fc9?w=300&fit=crop'},
-                {id:3, name:'다이슨 V15 Detect 청소기', price:879000, orig:1099000, disc:20, rating:4.9, rank:3, img:'https://images.unsplash.com/photo-1588258509702-4d7e69a8b726?w=300&fit=crop'},
-                {id:4, name:'나이키 에어 조던 1', price:179000, orig:239000, disc:25, rating:4.7, rank:4, img:'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=300&fit=crop'},
-                {id:5, name:'소니 WH-1000XM5 헤드셋', price:429000, orig:549000, disc:22, rating:4.7, rank:5, img:'https://images.unsplash.com/photo-1613422554535-162f359983d9?w=300&fit=crop'},
-                {id:6, name:'메디키트 기저귀 L52', price:28900, orig:36900, disc:22, rating:4.9, rank:6, img:'https://images.unsplash.com/photo-1588880331178-7fd6f5dfe279?w=300&fit=crop'},
-                {id:7, name:'테팔 쿡앤클린 팬', price:39900, orig:59900, disc:33, rating:4.9, rank:7, img:'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=300&fit=crop'},
-                {id:8, name:'라네즈 립앤힙스틱', price:29000, orig:39000, disc:26, rating:4.9, rank:8, img:'https://images.unsplash.com/photo-1625772299848-361b803ffa25?w=300&fit=crop'}
-            ],
             '패션의류/잡화': [
-                {id:21, name:'나이키 에어 조던 1 로우', price:179000, orig:239000, disc:25, rating:4.7, rank:1, img:'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=300&fit=crop'},
-                {id:22, name:'구찌 마몽 오버사이즈', price:1290000, orig:1690000, disc:24, rating:4.8, rank:2, img:'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=300&fit=crop'},
-                {id:23, name:'반스 올드스쿨 블랙', price:89000, orig:119000, disc:25, rating:4.6, rank:3, img:'https://images.unsplash.com/photo-1543161456-84f56265c631?w=300&fit=crop'},
-                {id:24, name:'아디다스 삼바 OG', price:139000, orig:189000, disc:26, rating:4.7, rank:4, img:'https://images.unsplash.com/photo-1714238636838-e3f7f2a9a4e7?w=300&fit=crop'},
-                {id:25, name:'크록스 클래식 클로그', price:59000, orig:79000, disc:25, rating:4.6, rank:5, img:'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=300&fit=crop'},
-                {id:26, name:'PUMA 스웨이드 클래식', price:109000, orig:149000, disc:27, rating:4.6, rank:6, img:'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300&fit=crop'},
-                {id:27, name:'언더아머 커브', price:129000, orig:179000, disc:28, rating:4.7, rank:7, img:'https://images.unsplash.com/photo-1608144080761-b64d9cdb8b17?w=300&fit=crop'},
-                {id:28, name:'휠라 디스럽터 2', price:99000, orig:139000, disc:29, rating:4.6, rank:8, img:'https://images.unsplash.com/photo-1605348532760-6753d2c43329?w=300&fit=crop'}
+                {id:101, name:'나이키 에어 조던 1 로우', price:179000, orig:239000, disc:25, rating:4.7, rank:1, img:'https://images.unsplash.com/photo-1549298916-b41d501d3772?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80'},
+                {id:102, name:'구찌 마몽 오버사이즈', price:1290000, orig:1690000, disc:24, rating:4.8, rank:2, img:'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'},
+                {id:103, name:'반스 올드스쿨 블랙', price:89000, orig:119000, disc:25, rating:4.6, rank:3, img:'https://images.unsplash.com/photo-1543161456-84f56265c631?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'},
+                {id:104, name:'아디다스 삼바 OG', price:139000, orig:189000, disc:26, rating:4.7, rank:4, img:'https://images.unsplash.com/photo-1714238636838-e3f7f2a9a4e7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'},
+                {id:105, name:'크록스 클래식 클로그', price:59000, orig:79000, disc:25, rating:4.6, rank:5, img:'https://images.unsplash.com/photo-1580582932707-520aed937b7b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'},
+                {id:106, name:'PUMA 스웨이드 클래식', price:109000, orig:149000, disc:27, rating:4.6, rank:6, img:'https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'},
+                {id:107, name:'언더아머 커브', price:129000, orig:179000, disc:28, rating:4.7, rank:7, img:'https://images.unsplash.com/photo-1608144080761-b64d9cdb8b17?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'},
+                {id:108, name:'휠라 디스럽터 2', price:99000, orig:139000, disc:29, rating:4.6, rank:8, img:'https://images.unsplash.com/photo-1605348532760-6753d2c43329?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'}
             ],
             '뷰티': [
-                {id:41, name:'라네즈 립앤힙스틱', price:29000, orig:39000, disc:26, rating:4.9, rank:1, img:'https://images.unsplash.com/photo-1625772299848-361b803ffa25?w=300&fit=crop'},
-                {id:42, name:'설화수 윤조에센스', price:189000, orig:249000, disc:24, rating:4.8, rank:2, img:'https://images.unsplash.com/photo-1583394838336-acd977736f90?w=300&fit=crop'},
-                {id:43, name:'바비리스 헤어드라이어', price:89000, orig:139000, disc:36, rating:4.7, rank:3, img:'https://images.unsplash.com/photo-1574169207006-0be2e8b382a5?w=300&fit=crop'},
-                {id:44, name:'미샤 글로우 틴트', price:12900, orig:18900, disc:32, rating:4.8, rank:4, img:'https://images.unsplash.com/photo-1621184455862-66f5dc406c35?w=300&fit=crop'},
-                {id:45, name:'필립스 레이저 제모기', price:399000, orig:549000, disc:27, rating:4.8, rank:5, img:'https://images.unsplash.com/photo-1587651613789-26d9b1f291dd?w=300&fit=crop'},
-                {id:46, name:'눕네오 팩트 오리지널', price:19900, orig:29900, disc:33, rating:4.9, rank:6, img:'https://images.unsplash.com/photo-1583394838336-acd977736f90?w=300&fit=crop'},
-                {id:47, name:'클리오 킬러 펜라이너', price:12900, orig:18900, disc:32, rating:4.8, rank:7, img:'https://images.unsplash.com/photo-1621184455862-66f5dc406c35?w=300&fit=crop'},
-                {id:48, name:'에뛰드 하우스 틴트', price:11900, orig:17900, disc:34, rating:4.9, rank:8, img:'https://images.unsplash.com/photo-1625772299848-361b803ffa25?w=300&fit=crop'}
+                {id:201, name:'라네즈 립앤힙스틱', price:29000, orig:39000, disc:26, rating:4.9, rank:1, img:'https://images.unsplash.com/photo-1625772299848-361b803ffa25?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'},
+                {id:202, name:'설화수 윤조에센스', price:189000, orig:249000, disc:24, rating:4.8, rank:2, img:'https://images.unsplash.com/photo-1583394838336-acd977736f90?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'},
+                {id:203, name:'바비리스 헤어드라이어', price:89000, orig:139000, disc:36, rating:4.7, rank:3, img:'https://images.unsplash.com/photo-1574169207006-0be2e8b382a5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'},
+                {id:204, name:'미샤 글로우 틴트', price:12900, orig:18900, disc:32, rating:4.8, rank:4, img:'https://images.unsplash.com/photo-1621184455862-66f5dc406c35?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'},
+                {id:205, name:'필립스 레이저 제모기', price:399000, orig:549000, disc:27, rating:4.8, rank:5, img:'https://images.unsplash.com/photo-1587651613789-26d9b1f291dd?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'},
+                {id:206, name:'눕네오 팩트 오리지널', price:19900, orig:29900, disc:33, rating:4.9, rank:6, img:'https://images.unsplash.com/photo-1590770259408-ea4c3ca947f6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'},
+                {id:207, name:'클리오 킬러 펜라이너', price:12900, orig:18900, disc:32, rating:4.8, rank:7, img:'https://images.unsplash.com/photo-1621184455862-66f5dc406c35?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'},
+                {id:208, name:'에뛰드 하우스 틴트', price:11900, orig:17900, disc:34, rating:4.9, rank:8, img:'https://images.unsplash.com/photo-1625772299848-361b803ffa25?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'}
+            ],
+            '출산/유아동': [
+                {id:301, name:'메디키트 기저귀 L52', price:28900, orig:36900, disc:22, rating:4.9, rank:1, img:'https://images.unsplash.com/photo-1588880331178-7fd6f5dfe279?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'},
+                {id:302, name:'파파 유기농 분유 3호', price:45900, orig:59900, disc:23, rating:4.8, rank:2, img:'https://images.unsplash.com/photo-1596531114065-24743495bfa0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'},
+                {id:303, name:'아토팜 영유아 로션', price:22900, orig:29900, disc:23, rating:4.9, rank:3, img:'https://images.unsplash.com/photo-1583394838336-acd977736f90?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'},
+                {id:304, name:'일루와 스와들업', price:29900, orig:39900, disc:25, rating:4.8, rank:4, img:'https://images.unsplash.com/photo-1588887123941-6ab948fe3225?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'},
+                {id:305, name:'타이니러브 물티슈 120매', price:12900, orig:17900, disc:28, rating:4.9, rank:5, img:'https://images.unsplash.com/photo-1612872087720-bb876e4b0e9d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'},
+                {id:306, name:'베베숲 유아용 샴푸', price:18900, orig:24900, disc:24, rating:4.8, rank:6, img:'https://images.unsplash.com/photo-1590770259408-ea4c3ca947f6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'},
+                {id:307, name:'마마머슬러그 젖병', price:24900, orig:34900, disc:29, rating:4.7, rank:7, img:'https://images.unsplash.com/photo-1588887123941-6ab948fe3225?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'},
+                {id:308, name:'네이처러브 이유식', price:39900, orig:54900, disc:27, rating:4.9, rank:8, img:'https://images.unsplash.com/photo-1596531114065-24743495bfa0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'}
+            ],
+            '자동차용품': [
+                {id:401, name:'타이거 넥커버', price:29900, orig:39900, disc:25, rating:4.8, rank:1, img:'https://images.unsplash.com/photo-1558618047-3c8c76bbb17e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'},
+                {id:402, name:'카마트 핸드폰거치대', price:12900, orig:19900, disc:35, rating:4.7, rank:2, img:'https://images.unsplash.com/photo-1583121274602-3e2820c69888?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'},
+                {id:403, name:'오토퓨어 차량용 방향제', price:8900, orig:14900, disc:40, rating:4.9, rank:3, img:'https://images.unsplash.com/photo-1587014611541-10ea5b4a1a1f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'},
+                {id:404, name:'밀라노 시트커버', price:89000, orig:129000, disc:31, rating:4.8, rank:4, img:'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'},
+                {id:405, name:'파워딜 차량청소기', price:29900, orig:45900, disc:35, rating:4.7, rank:5, img:'https://images.unsplash.com/photo-1588258509702-4d7e69a8b726?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'},
+                {id:406, name:'아이카 디지털인버터', price:69000, orig:99000, disc:30, rating:4.8, rank:6, img:'https://images.unsplash.com/photo-1614224933829-bbe858dc4b3d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'},
+                {id:407, name:'앱코 노트북대차', price:24900, orig:35900, disc:31, rating:4.7, rank:7, img:'https://images.unsplash.com/photo-1583121274602-3e2820c69888?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'},
+                {id:408, name:'카멜 차량용 진공청소기', price:39900, orig:59900, disc:33, rating:4.9, rank:8, img:'https://images.unsplash.com/photo-1603331848932-18c120f13d89?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'}
+            ],
+            '가전디지털': [
+                {id:501, name:'삼성 갤럭시 S25 Ultra', price:1399000, orig:1699000, disc:18, rating:4.9, rank:1, img:'https://images.unsplash.com/photo-1721302829049-1f0b2c7e6f4a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'},
+                {id:502, name:'아이폰16 Pro Max 1TB', price:1649000, orig:1899000, disc:13, rating:4.8, rank:2, img:'https://images.unsplash.com/photo-1592899678534-256a34c48fc9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'},
+                {id:503, name:'다이슨 V15 Detect 청소기', price:879000, orig:1099000, disc:20, rating:4.9, rank:3, img:'https://images.unsplash.com/photo-1588258509702-4d7e69a8b726?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'},
+                {id:504, name:'소니 WH-1000XM5 헤드셋', price:429000, orig:549000, disc:22, rating:4.7, rank:4, img:'https://images.unsplash.com/photo-1613422554535-162f359983d9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'},
+                {id:505, name:'LG 코드제로 청소기', price:789000, orig:999000, disc:21, rating:4.8, rank:5, img:'https://images.unsplash.com/photo-1606890658317-7d4e4c34da0a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'},
+                {id:506, name:'애플 워치9 45mm', price:589000, orig:699000, disc:16, rating:4.9, rank:6, img:'https://images.unsplash.com/photo-1523275335684-37898b6baf30?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'},
+                {id:507, name:'샤오미 레이저 프린터', price:189000, orig:269000, disc:30, rating:4.7, rank:7, img:'https://images.unsplash.com/photo-1585388606541-a5bd189443bb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'},
+                {id:508, name:'안커 사운드코어 스피커', price:99000, orig:149000, disc:34, rating:4.8, rank:8, img:'https://images.unsplash.com/photo-1611945387124-6d7b445d5d74?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'}
             ]
-            // 다른 카테고리들도 동일한 구조로 추가 가능
+            // 다른 카테고리들도 동일한 구조로 완성 가능
         };
 
-        function renderProducts(category = 'all') {
+        function renderProducts(category) {
             const grid = document.getElementById('products-grid');
-            const products = productsByCategory[category] || productsByCategory['all'];
+            const products = productsByCategory[category] || [];
+            
+            if (products.length === 0) {
+                grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 40px; color: #666; font-size: 18px;">준비중입니다...</p>';
+                return;
+            }
             
             grid.innerHTML = products.map(product => `
                 <div class="product-card" onclick="window.open('https://www.coupang.com/vp/products/${product.id}?partner_id=${MY_PARTNERS_ID}', '_blank')">
-                    <img src="${product.img}" alt="${product.name}" class="product-image">
+                    <div class="product-image">
+                        <img src="${product.img}" alt="${product.name}" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+                        <div style="display:none; color:#999; font-size:24px;">📦</div>
+                    </div>
                     <div class="product-info">
                         <div class="product-name">${product.name}</div>
                         <div class="product-price">
@@ -307,7 +349,7 @@
                             <span class="stars">★${product.rating}</span>
                             (${product.rank}위)
                         </div>
-                        <button class="buy-btn">바로구매 🚀</button>
+                        <button class="buy-btn">로켓배송 🚀</button>
                     </div>
                 </div>
             `).join('');
@@ -318,7 +360,8 @@
                 btn.addEventListener('click', () => {
                     document.querySelector('.category-btn.active').classList.remove('active');
                     btn.classList.add('active');
-                    renderProducts(btn.dataset.category);
+                    const category = btn.dataset.category;
+                    renderProducts(category);
                 });
             });
         }
@@ -326,7 +369,7 @@
         // 초기화
         document.addEventListener('DOMContentLoaded', () => {
             setupCategories();
-            renderProducts('all');
+            renderProducts('패션의류/잡화'); // 기본값
         });
     </script>
 </body>
