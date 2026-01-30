@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>🛒 쿠팡 최저가 찾기</title>
+    <meta charset="UTF-8">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            max-width: 1200px; margin: 0 auto; 
+            padding: 20px; background: #f8f9fa;
+        }
+        .header { text-align: center; margin: 40px 0; }
+        .search-box { 
+            display: flex; justify-content: center; 
+            gap: 10px; margin: 30px 0; flex-wrap: wrap;
+        }
+        .search-input { 
+            width: 400px; padding: 15px 20px; 
+            border: 2px solid #ff6b35; border-radius: 30px;
+            font-size: 16px; outline: none;
+        }
+        .search-btn { 
+            padding: 15px 30px; background: #ff6b35;
+            color: white; border: none; border-radius: 30px;
+            font-size: 16px; cursor: pointer; font-weight: bold;
+        }
+        .search-btn:hover { background: #e55a2b; }
+        .products { 
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px; margin-top: 30px;
+        }
+        .product { 
+            background: white; border-radius: 15px; 
+            padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .product:hover { transform: translateY(-5px); box-shadow: 0 12px 30px rgba(0,0,0,0.15); }
+        .product-img { width: 100%; height: 180px; object-fit: cover; border-radius: 10px; }
+        .product-name { font-weight: 600; margin: 12px 0; line-height: 1.4; height: 3em; overflow: hidden; }
+        .price { font-size: 24px; font-weight: bold; color: #ff6b35; margin: 10px 0; }
+        .lowest { background: #28a745 !important; color: white !important; padding: 5px 12px; border-radius: 20px; font-size: 14px; }
+        .buy-btn { width: 100%; padding: 12px; background: linear-gradient(135deg, #ff6b35, #ff8c42); color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 12px; }
+        .buy-btn:hover { transform: scale(1.02); }
+        .loading { text-align: center; font-size: 18px; color: #666; margin: 40px 0; }
+        @media (max-width: 768px) { .search-input { width: 280px; } }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🛒 쿠팡 최저가 찾기</h1>
+        <p>원하는 상품 검색하면 자동으로 최저가 먼저 보여드려요!</p>
+    </div>
+    
+    <div class="search-box">
+        <input type="text" class="search-input" id="searchInput" placeholder="예: 아이폰15, 갤럭시S25, 에어팟">
+        <button class="search-btn" onclick="searchCoupang()">🔍 최저가 찾기</button>
+    </div>
+    
+    <div id="loading" class="loading" style="display: none;">검색 중입니다... 잠시만요! ⏳</div>
+    <div id="products" class="products"></div>
+
+    <script>
+        // 🎯 쿠팡 파트너스 링크 (여기에 본인 ID 넣기)
+        const MY_PARTNERS_ID = 'AF9782821'; // ← 쿠팡파트너스에서 발급받은 ID
+        
+        async function searchCoupang() {
+            const keyword = document.getElementById('searchInput').value.trim();
+            if (!keyword) { alert('검색어를 입력해주세요!'); return; }
+            
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('products').innerHTML = '';
+            
+            try {
+                // 쿠팡 검색 API 호출 (실제로는 백엔드에서 처리)
+                const response = await fetch(`https://api-gateway.coupang.com/v2/providers/affiliate_open_api/apis/openapi/products/search?keyword=${encodeURIComponent(keyword)}`);
+                const data = await response.json();
+                
+                // 최저가 먼저 정렬
+                const products = data.data.productData.sort((a, b) => 
+                    parseInt(a.nowPrice.replace(/,/g, '')) - parseInt(b.nowPrice.replace(/,/g, ''))
+                );
+                
+                showProducts(products);
+            } catch (error) {
+                document.getElementById('products').innerHTML = '<div style="text-align:center;padding:60px;color:#666;">검색 중 오류가 발생했어요. 잠시 후 다시 시도해주세요! 😅</div>';
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
+        }
+        
+        function showProducts(products) {
+            const container = document.getElementById('products');
+            if (products.length === 0) {
+                container.innerHTML = '<div style="text-align:center;padding:60px;color:#666;">검색 결과가 없어요. 다른 키워드로 다시 검색해보세요! 🔄</div>';
+                return;
+            }
+            
+            // 최저가 상품에 특별 표시
+            const cheapest = products[0];
+            
+            container.innerHTML = products.slice(0, 12).map((product, index) => `
+                <div class="product">
+                    <img src="${product.imageUrl}" alt="${product.productName}" class="product-img" onerror="this.src='https://via.placeholder.com/300x180/eee/ccc?text=이미지없음'">
+                    <div class="product-name">${product.productName}</div>
+                    <div class="price ${index === 0 ? 'lowest' : ''}">
+                        ${parseInt(product.nowPrice.replace(/,/g, '')).toLocaleString()}원
+                        ${index === 0 ? ' 🔥 최저가!' : ''}
+                    </div>
+                    <p style="color:#666;font-size:14px;margin:5px 0;">
+                        ${product.vendorName || '쿠팡 파트너'} | ${product.conversionRate || '로켓배송'} 🚀
+                    </p>
+                    <button class="buy-btn" onclick="buyNow('${product.productId}', '${product.productName}')">
+                        🛒 바로 구매하기
+                    </button>
+                </div>
+            `).join('');
+        }
+        
+        async function buyNow(productId, productName) {
+            // 쿠팡 파트너스 딥링크 생성
+            const partnerLink = `https://click.linksynergy.com/deeplink?id=${MY_PARTNERS_ID}&mid=53390&murl=https%3A%2F%2Fwww.coupang.com%2Fvp%2Fproducts%2F${productId}`;
+            window.open(partnerLink, '_blank');
+            console.log(`구매링크: ${productName}`);
+        }
+        
+        // 엔터키로 검색
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') searchCoupang();
+        });
+    </script>
+</body>
+</html>
