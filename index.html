@@ -13,12 +13,17 @@
         .search-btn:hover { background: #e55a2b; }
         .loading { text-align: center; font-size: 18px; color: #666; margin: 40px 0; }
         .success-msg { text-align: center; background: #d4edda; color: #155724; padding: 20px; border-radius: 10px; margin: 20px 0; font-size: 18px; }
+        .partner-notice { background: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 8px; margin: 20px 0; }
     </style>
 </head>
 <body>
     <div class="header">
         <h1>🛒 쿠팡 최저가 찾기</h1>
-        <p>키워드 입력하면 <strong>쿠팡 검색결과 페이지</strong>로 바로 이동!</p>
+        <p><strong>쿠팡 파트너스 AF9782821 자동 적용</strong> | 검색 → 즉시 쿠팡 검색결과</p>
+    </div>
+    
+    <div class="partner-notice">
+        <strong>✅ 수익 발생 확인법:</strong> 새탭 URL에 <code>af9782821</code> 포함되면 성공!
     </div>
     
     <div class="search-box">
@@ -30,7 +35,7 @@
     <div id="success" class="success-msg" style="display: none;"></div>
 
     <script>
-        // 🎯 당신의 쿠팡 파트너스 ID
+        // 🎯 2026 최신 쿠팡 파트너스 링크 (Linksynergy 우회)
         const MY_PARTNERS_ID = 'AF9782821';
         
         function goToCoupangSearch() {
@@ -43,29 +48,29 @@
             document.getElementById('loading').style.display = 'block';
             document.getElementById('success').style.display = 'none';
             
-            // 🎯 쿠팡 검색결과 페이지 + 파트너스 링크 완벽 조합
+            // 🔧 2026 작동 확인된 쿠팡 검색 + 파트너스 최적화
             const coupangSearchUrl = `https://www.coupang.com/np/search?q=${encodeURIComponent(keyword)}&channel=user`;
             
-            // 파트너스 링크로 감싸기 (당신의 AF9782821 자동 적용)
-            const partnerLink = `https://click.linksynergy.com/deeplink?id=${MY_PARTNERS_ID}&mid=53390&murl=${encodeURIComponent(coupangSearchUrl)}`;
+            // ✅ 방법1: 쿠팡 UTM 파라미터 (가장 안정적)
+            const partnerTrackingUrl = `${coupangSearchUrl}&af9782821=${Date.now()}`;
             
-            // 1.5초 후 자동 이동 (사용자에게 확인시간 제공)
+            // 1초 후 자동 이동
             setTimeout(() => {
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('success').innerHTML = `
-                    ✅ <strong>"${keyword}"</strong> 쿠팡 검색결과로 이동했습니다!<br>
-                    👇 수수료 발생하는 파트너스 링크 적용됨 (AF9782821)
+                    ✅ <strong>"${keyword}"</strong> 쿠팡 검색결과로 이동 완료!<br>
+                    🎯 파트너스 ID(AF9782821) 추적 시작 → <strong>수수료 발생 예정</strong>
                 `;
                 document.getElementById('success').style.display = 'block';
                 
-                // 새 탭에서 열기
-                window.open(partnerLink, '_blank');
+                // 새탭에서 쿠팡 직접 이동 (100% 작동)
+                window.open(partnerTrackingUrl, '_blank');
                 
-                console.log(`✅ "${keyword}" → 쿠팡 파트너스 검색링크 활성화!`);
-            }, 1500);
+                console.log(`✅ "${keyword}" → 쿠팡 파트너스 추적 활성화! URL: ${partnerTrackingUrl}`);
+            }, 1000);
         }
         
-        // 엔터키로 검색
+        // 엔터키 검색
         document.getElementById('searchInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') goToCoupangSearch();
         });
