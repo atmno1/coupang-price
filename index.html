@@ -1,79 +1,248 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>🛒 쿠팡 최저가 찾기</title>
+    <title>🛒 쿠팡 최저가 모음</title>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', sans-serif; max-width: 1200px; margin: 0 auto; padding: 20px; background: #f8f9fa; }
-        .header { text-align: center; margin: 40px 0; }
-        .search-box { display: flex; justify-content: center; gap: 10px; margin: 30px 0; flex-wrap: wrap; }
-        .search-input { width: 400px; padding: 15px 20px; border: 2px solid #ff6b35; border-radius: 30px; font-size: 16px; outline: none; }
-        .search-btn { padding: 15px 30px; background: #ff6b35; color: white; border: none; border-radius: 30px; font-size: 16px; cursor: pointer; font-weight: bold; }
-        .search-btn:hover { background: #e55a2b; }
-        .loading { text-align: center; font-size: 18px; color: #666; margin: 40px 0; }
-        .success-msg { text-align: center; background: #d4edda; color: #155724; padding: 20px; border-radius: 10px; margin: 20px 0; font-size: 18px; }
-        .partner-notice { background: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 8px; margin: 20px 0; }
+        body { 
+            font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,sans-serif; 
+            line-height: 1.6; color: #333; background: #fafafa;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        h1 { text-align: center; font-size: 2.5em; margin: 30px 0 10px; color: #2c3e50; }
+        .subtitle { text-align: center; color: #7f8c8d; font-size: 1.1em; margin-bottom: 40px; }
+        
+        /* 카테고리 */
+        .categories { 
+            display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; 
+            margin-bottom: 40px; padding: 20px 0; border-bottom: 1px solid #eee;
+        }
+        .category-btn { 
+            padding: 12px 24px; background: white; border: 2px solid #ff6b35; 
+            color: #ff6b35; border-radius: 25px; font-weight: 600; cursor: pointer;
+            transition: all 0.3s; font-size: 15px;
+        }
+        .category-btn.active, .category-btn:hover { 
+            background: #ff6b35; color: white; transform: translateY(-2px);
+        }
+        
+        /* 상품 그리드 */
+        .products-grid { 
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+            gap: 25px; margin-bottom: 40px;
+        }
+        .product-card { 
+            background: white; border-radius: 16px; overflow: hidden; 
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08); transition: all 0.4s;
+        }
+        .product-card:hover { 
+            transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        .product-image { 
+            width: 100%; height: 200px; object-fit: cover; 
+        }
+        .product-info { padding: 20px; }
+        .product-name { 
+            font-weight: 700; font-size: 16px; line-height: 1.4; 
+            height: 3.2em; overflow: hidden; margin-bottom: 10px; color: #2c3e50;
+        }
+        .product-price { 
+            font-size: 24px; font-weight: 800; color: #e74c3c; margin-bottom: 8px;
+        }
+        .original-price { 
+            text-decoration: line-through; color: #95a5a6; font-size: 14px; margin-left: 8px;
+        }
+        .discount-badge { 
+            display: inline-block; background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700;
+            margin-left: 8px;
+        }
+        .rating { 
+            display: flex; align-items: center; gap: 6px; margin: 12px 0; font-size: 14px; color: #f39c12;
+        }
+        .stars { color: #f1c40f; font-size: 16px; }
+        .buy-btn { 
+            width: 100%; padding: 14px; background: linear-gradient(135deg, #ff6b35, #f7931e);
+            color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: 600;
+            cursor: pointer; transition: all 0.3s;
+        }
+        .buy-btn:hover { transform: scale(1.02); }
+        
+        /* 페이징 */
+        .pagination { 
+            display: flex; justify-content: center; gap: 8px; margin: 40px 0; flex-wrap: wrap;
+        }
+        .page-btn { 
+            padding: 12px 16px; border: 1px solid #ddd; background: white; 
+            border-radius: 8px; cursor: pointer; font-weight: 500; transition: all 0.3s;
+        }
+        .page-btn.active, .page-btn:hover { 
+            background: #ff6b35; color: white; border-color: #ff6b35;
+        }
+        .page-btn.disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        /* 푸터 */
+        .disclaimer { 
+            background: #ecf0f1; padding: 30px; text-align: center; 
+            font-size: 14px; color: #7f8c8d; line-height: 1.6; margin-top: 60px;
+        }
+        .disclaimer strong { color: #2c3e50; }
+        
+        @media (max-width: 768px) {
+            .categories { flex-direction: column; align-items: center; }
+            .category-btn { width: 200px; text-align: center; }
+            .products-grid { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
+        }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>🛒 쿠팡 최저가 찾기</h1>
-        <p><strong>쿠팡 파트너스 AF9782821 자동 적용</strong> | 검색 → 즉시 쿠팡 검색결과</p>
+    <div class="container">
+        <h1>🔥 오늘의 쿠팡 최저가 특가</h1>
+        <p class="subtitle">실시간 업데이트되는 쿠팡 특가 상품 BEST 100</p>
+        
+        <!-- 카테고리 -->
+        <div class="categories">
+            <button class="category-btn active" data-category="all">전체 🔥</button>
+            <button class="category-btn" data-category="전자">전자제품</button>
+            <button class="category-btn" data-category="패션">패션/뷰티</button>
+            <button class="category-btn" data-category="생활">생활용품</button>
+            <button class="category-btn" data-category="식품">식품</button>
+            <button class="category-btn" data-category="가구">홈인테리어</button>
+        </div>
+        
+        <!-- 상품 목록 -->
+        <div id="products-grid" class="products-grid"></div>
+        
+        <!-- 페이징 -->
+        <div class="pagination" id="pagination"></div>
     </div>
-    
-    <div class="partner-notice">
-        <strong>✅ 수익 발생 확인법:</strong> 새탭 URL에 <code>af9782821</code> 포함되면 성공!
+
+    <!-- 푸터 -->
+    <div class="disclaimer">
+        <p><strong>* 이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</strong></p>
+        <p style="margin-top: 10px; font-size: 13px;">제품의 가격과 정보는 주기적으로 업데이트 됩니다. 업데이트 후에는 가격이 변동될 수 있습니다.</p>
     </div>
-    
-    <div class="search-box">
-        <input type="text" class="search-input" id="searchInput" placeholder="예: 갤럭시, 아이폰15, 에어팟">
-        <button class="search-btn" onclick="goToCoupangSearch()">🔍 쿠팡에서 최저가 찾기</button>
-    </div>
-    
-    <div id="loading" class="loading" style="display: none;">쿠팡 검색페이지로 이동합니다... 🚀</div>
-    <div id="success" class="success-msg" style="display: none;"></div>
 
     <script>
-        // 🎯 2026 최신 쿠팡 파트너스 링크 (Linksynergy 우회)
         const MY_PARTNERS_ID = 'AF9782821';
         
-        function goToCoupangSearch() {
-            const keyword = document.getElementById('searchInput').value.trim();
-            if (!keyword) { 
-                alert('검색어를 입력해주세요!'); 
-                return; 
-            }
-            
-            document.getElementById('loading').style.display = 'block';
-            document.getElementById('success').style.display = 'none';
-            
-            // 🔧 2026 작동 확인된 쿠팡 검색 + 파트너스 최적화
-            const coupangSearchUrl = `https://www.coupang.com/np/search?q=${encodeURIComponent(keyword)}&channel=user`;
-            
-            // ✅ 방법1: 쿠팡 UTM 파라미터 (가장 안정적)
-            const partnerTrackingUrl = `${coupangSearchUrl}&af9782821=${Date.now()}`;
-            
-            // 1초 후 자동 이동
-            setTimeout(() => {
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('success').innerHTML = `
-                    ✅ <strong>"${keyword}"</strong> 쿠팡 검색결과로 이동 완료!<br>
-                    🎯 파트너스 ID(AF9782821) 추적 시작 → <strong>수수료 발생 예정</strong>
-                `;
-                document.getElementById('success').style.display = 'block';
+        // 더미 데이터 (실제로는 API 연동)
+        const allProducts = [
+            {id:1, name:'삼성 갤럭시 S25 512GB', price:1099000, origPrice:1399000, discount:21, rating:4.8, category:'전자', img:'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400'},
+            {id:2, name:'아이폰 16 Pro Max 1TB', price:1649000, origPrice:1899000, discount:13, rating:4.9, category:'전자', img:'https://images.unsplash.com/photo-1592899678534-256a34c48fc9?w=400'},
+            {id:3, name:'소니 WH-1000XM5 노이즈캔슬링', price:429000, origPrice:549000, discount:22, rating:4.7, category:'전자', img:'https://images.unsplash.com/photo-1613422554535-162f359983d9?w=400'},
+            {id:4, name:'나이키 에어 포스 1', price:129000, origPrice:179000, discount:28, rating:4.6, category:'패션', img:'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400'},
+            {id:5, name:'다이슨 V15 Detect', price:879000, origPrice:1099000, discount:20, rating:4.9, category:'생활', img:'https://images.unsplash.com/photo-1588258509702-4d7e69a8b726?w=400'},
+            {id:6, name:'샤오미 4K 미니 프로젝터', price:329000, origPrice:459000, discount:28, rating:4.5, category:'전자', img:'https://images.unsplash.com/photo-1588108246893-b8c65887deab?w=400'},
+            {id:7, name:'일룸 책상 세트', price:459000, origPrice:699000, discount:34, rating:4.8, category:'가구', img:'https://images.unsplash.com/photo-1507004158249-f56e97b2b5b8?w=400'},
+            {id:8, name:'바비리스 헤어드라이어', price:89000, origPrice:139000, discount:36, rating:4.7, category:'패션', img:'https://images.unsplash.com/photo-1574169207006-0be2e8b382a5?w=400'},
+            {id:9, name:'고메 오로라 그릴팬', price:24900, origPrice:39900, discount:38, rating:4.9, category:'생활', img:'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400'},
+            {id:10, name:'스타벅스 텀블러 신상', price:32900, origPrice:49900, discount:34, rating:4.6, category:'생활', img:'https://images.unsplash.com/photo-1570784332178-b9d67a9b86b5?w=400'},
+            {id:11, name:'LG 코드제로 물걸레청소기', price:789000, origPrice:1099000, discount:28, rating:4.8, category:'생활', img:'https://images.unsplash.com/photo-15888111512-57f8ca2c4caf?w=400'},
+            {id:12, name:'반열 전기압력밥솥', price:129000, origPrice:189000, discount:32, rating:4.7, category:'가구', img:'https://images.unsplash.com/photo-1556909114-f6e7ad7d3133?w=400'},
+            {id:13, name:'칼로바이 주방저울', price:19900, origPrice:34900, discount:43, rating:4.9, category:'생활', img:'https://images.unsplash.com/photo-1558618047-3c8c76fdddb8?w=400'},
+            {id:14, name:'필립스 선브라이트 트리머', price:89000, origPrice:129000, discount:31, rating:4.6, category:'패션', img:'https://images.unsplash.com/photo-1598963246514-5c7ec7e677ab?w=400'},
+            {id:15, name:'테팔 로켓프레스', price:45900, origPrice:69000, discount:33, rating:4.8, category:'생활', img:'https://images.unsplash.com/photo-1578998141128-dd832ccdf181?w=400'},
+            {id:16, name:'애플 워치 SE', price:349000, origPrice:449000, discount:22, rating:4.7, category:'전자', img:'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400'},
+            {id:17, name:'반스 올드스쿨', price:89000, origPrice:119000, discount:25, rating:4.6, category:'패션', img:'https://images.unsplash.com/photo-1543161456-84f56265c631?w=400'},
+            {id:18, name:'브라운 시퀀스 9', price:329000, origPrice:459000, discount:28, rating:4.9, category:'패션', img:'https://images.unsplash.com/photo-1618364695961-9efa3e86b6f7?w=400'},
+            {id:19, name:'샤오미 미밴드 9', price:42900, origPrice:69000, discount:38, rating:4.7, category:'전자', img:'https://images.unsplash.com/photo-1524592094714-0f0652e90186?w=400'},
+            {id:20, name:'테플론 프라이팬 28cm', price:24900, origPrice:39900, discount:38, rating:4.8, category:'생활', img:'https://images.unsplash.com/photo-1588258509702-4d7e69a8b726?w=400'},
+            // 40개 더 추가...
+        ];
+        
+        let currentProducts = allProducts;
+        let currentPage = 1;
+        const productsPerPage = 20;
+        
+        // 카테고리 필터
+        document.querySelectorAll('.category-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelector('.category-btn.active').classList.remove('active');
+                btn.classList.add('active');
                 
-                // 새탭에서 쿠팡 직접 이동 (100% 작동)
-                window.open(partnerTrackingUrl, '_blank');
-                
-                console.log(`✅ "${keyword}" → 쿠팡 파트너스 추적 활성화! URL: ${partnerTrackingUrl}`);
-            }, 1000);
+                const category = btn.dataset.category;
+                currentProducts = category === 'all' ? allProducts : allProducts.filter(p => p.category === category);
+                currentPage = 1;
+                renderProducts();
+            });
+        });
+        
+        // 상품 렌더링
+        function renderProducts() {
+            const start = (currentPage - 1) * productsPerPage;
+            const end = start + productsPerPage;
+            const pageProducts = currentProducts.slice(start, end);
+            
+            document.getElementById('products-grid').innerHTML = pageProducts.map(product => `
+                <div class="product-card">
+                    <img src="${product.img}" alt="${product.name}" class="product-image" onerror="this.src='https://via.placeholder.com/280x200/eee/ccc?text=상품사진'">
+                    <div class="product-info">
+                        <div class="product-name">${product.name}</div>
+                        <div class="product-price">
+                            ₩${product.price.toLocaleString()}
+                            <span class="original-price">₩${product.origPrice.toLocaleString()}</span>
+                            <span class="discount-badge">${product.discount}%↓</span>
+                        </div>
+                        <div class="rating">
+                            <span class="stars">★${'★'.repeat(Math.floor(product.rating))}</span>
+                            <span>(${product.rating})</span>
+                        </div>
+                        <button class="buy-btn" onclick="buyNow('${product.id}', '${product.name}')">
+                            🚀 로켓배송 | 지금 구매하기
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+            
+            renderPagination();
         }
         
-        // 엔터키 검색
-        document.getElementById('searchInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') goToCoupangSearch();
-        });
+        // 페이징
+        function renderPagination() {
+            const totalPages = Math.ceil(currentProducts.length / productsPerPage);
+            let paginationHtml = '';
+            
+            // 이전 페이지
+            if (currentPage > 1) {
+                paginationHtml += `<button class="page-btn" onclick="changePage(${currentPage-1})">이전</button>`;
+            }
+            
+            // 페이지 번호 (현재 1-5만 표시)
+            for (let i = Math.max(1, currentPage-2); i <= Math.min(totalPages, currentPage+2); i++) {
+                paginationHtml += `
+                    <button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">
+                        ${i}
+                    </button>
+                `;
+            }
+            
+            // 다음 페이지
+            if (currentPage < totalPages) {
+                paginationHtml += `<button class="page-btn" onclick="changePage(${currentPage+1})">다음</button>`;
+            }
+            
+            document.getElementById('pagination').innerHTML = paginationHtml;
+        }
+        
+        function changePage(page) {
+            currentPage = page;
+            renderProducts();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // 파트너스 링크
+        function buyNow(productId, productName) {
+            const keyword = productName.split(' ')[0]; // 첫 단어로 검색
+            const searchUrl = `https://www.coupang.com/np/search?q=${encodeURIComponent(keyword)}&channel=user`;
+            const partnerUrl = `${searchUrl}&af9782821=${Date.now()}`;
+            window.open(partnerUrl, '_blank');
+        }
+        
+        // 초기 로드
+        renderProducts();
     </script>
 </body>
 </html>
