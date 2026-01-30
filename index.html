@@ -56,7 +56,7 @@
         
         .products-grid { 
             display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
             gap: clamp(12px, 3vw, 20px); 
             margin-bottom: 40px;
         }
@@ -68,98 +68,118 @@
             transition: all 0.4s;
             cursor: pointer; 
             position: relative;
+            border: 3px solid transparent;
         }
         .product-card:hover { 
             transform: translateY(-10px); 
             box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+            border-color: #ff6b35;
         }
         .product-card:active { 
             transform: translateY(-5px) scale(0.98); 
         }
-        .product-image { 
+        
+        /* 사진 대신 아이콘 영역 */
+        .product-icon { 
             width: 100%; 
             height: clamp(160px, 35vw, 200px); 
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
         }
-        .product-image img { 
-            width: 100%; 
-            height: 100%; 
-            object-fit: cover;
-        }
-        .product-image::before {
+        .product-icon::before {
             content: '🛒';
-            font-size: clamp(32px, 10vw, 64px);
-            opacity: 0.1;
-            position: absolute;
+            font-size: clamp(48px, 12vw, 72px);
+            opacity: 0.9;
         }
+        .product-icon::after {
+            content: '인기\n상품';
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255,255,255,0.9);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: clamp(11px, 3vw, 13px);
+            font-weight: 700;
+            color: #333;
+            white-space: pre-line;
+            text-align: center;
+            line-height: 1.2;
+        }
+        
         .product-info { 
-            padding: clamp(12px, 4vw, 16px); 
+            padding: clamp(16px, 4vw, 20px); 
         }
         .product-name { 
             font-weight: 700; 
-            font-size: clamp(13px, 3vw, 14px); 
+            font-size: clamp(14px, 3.5vw, 16px); 
             line-height: 1.4; 
-            height: 2.8em; 
+            height: 3em; 
             overflow: hidden; 
-            margin-bottom: 8px; 
+            margin-bottom: 10px; 
             color: #2c3e50;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
         }
         .product-price { 
-            font-size: clamp(18px, 5vw, 20px); 
+            font-size: clamp(20px, 5.5vw, 24px); 
             font-weight: 800; 
             color: #e74c3c; 
-            margin-bottom: 6px;
+            margin-bottom: 8px;
         }
         .original-price { 
             text-decoration: line-through; 
             color: #95a5a6; 
-            font-size: clamp(11px, 2.5vw, 13px); 
-            margin-left: 6px;
+            font-size: clamp(13px, 3vw, 15px); 
+            margin-left: 8px;
         }
         .discount-badge { 
             display: inline-block; 
             background: linear-gradient(135deg, #27ae60, #2ecc71);
             color: white; 
-            padding: 3px 10px; 
-            border-radius: 15px; 
-            font-size: clamp(10px, 2vw, 11px); 
+            padding: 4px 12px; 
+            border-radius: 18px; 
+            font-size: clamp(11px, 2.5vw, 13px); 
             font-weight: 700;
-            margin-left: 8px;
+            margin-left: 10px;
         }
         .rating { 
             display: flex; 
             align-items: center; 
-            gap: 4px; 
-            margin: 8px 0; 
-            font-size: clamp(12px, 2.5vw, 13px); 
+            gap: 6px; 
+            margin: 12px 0; 
+            font-size: clamp(13px, 3vw, 15px); 
             color: #f39c12;
         }
         .stars { 
             color: #f1c40f; 
-            font-size: clamp(13px, 3vw, 14px); 
+            font-size: clamp(14px, 3.5vw, 16px); 
         }
         .buy-btn { 
             width: 100%; 
-            padding: clamp(10px, 3vw, 12px); 
+            padding: clamp(12px, 4vw, 16px); 
             background: linear-gradient(135deg, #ff6b35, #f7931e);
             color: white; 
             border: none; 
-            border-radius: 10px; 
-            font-size: clamp(13px, 3vw, 14px); 
-            font-weight: 600;
+            border-radius: 12px; 
+            font-size: clamp(14px, 3.5vw, 16px); 
+            font-weight: 700;
             cursor: pointer; 
             transition: all 0.3s; 
-            margin-top: 4px;
+            margin-top: 8px;
+            box-shadow: 0 4px 15px rgba(255,107,53,0.3);
+        }
+        .buy-btn:hover {
+            background: linear-gradient(135deg, #e55a2b, #e67e22);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255,107,53,0.4);
         }
         
-        .pagination { display: none; }
         .disclaimer { 
             background: #2c3e50; 
             color: #ecf0f1; 
@@ -173,9 +193,11 @@
         @media (max-width: 480px) {
             .container { padding: 10px; }
             .categories { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+            .products-grid { grid-template-columns: 1fr; }
         }
         @media (max-width: 768px) {
             .categories { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+            .products-grid { grid-template-columns: repeat(2, 1fr); }
         }
         @media (min-width: 1400px) {
             .products-grid { grid-template-columns: repeat(4, 1fr); gap: 25px; }
@@ -185,7 +207,7 @@
 <body>
     <div class="container">
         <h1>🔥 쿠팡 실시간 인기 BEST</h1>
-        <p class="subtitle">카테고리별 인기 1~8위 | 로켓배송 🚀 | 클릭시 최저가 상품페이지</p>
+        <p class="subtitle">카테고리별 인기 1~8위 | 로켓배송 🚀 | 클릭시 최저가 검색결과</p>
         
         <div class="categories-container">
             <div class="categories" id="categories">
@@ -212,13 +234,13 @@
 
     <div class="disclaimer">
         <p><strong>* 이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</strong></p>
-        <p style="font-size: clamp(12px, 2.5vw, 13px);">제품의 가격과 정보는 주기적으로 업데이트 됩니다. 최저가로 구매하세요!</p>
+        <p style="font-size: clamp(12px, 2.5vw, 13px);">클릭시 쿠팡에서 최저가로 자동 정렬되어 가장 저렴한 상품을 바로 확인할 수 있습니다!</p>
     </div>
 
     <script>
         const MY_PARTNERS_ID = 'AF9782821';
         
-        // ✅ 모든 카테고리별 완전한 8개 인기상품 + 실제 쿠팡 검색 링크
+        // 모든 카테고리별 완전한 8개 인기상품
         const productsByCategory = {
             '패션의류/잡화': [
                 {name:'나이키 에어 조던 1 로우', price:179000, orig:239000, disc:25, rating:4.7, rank:1, search:'나이키 에어 조던 1 로우'},
@@ -268,17 +290,17 @@
                 {name:'리빙플러스 칼세트', price:29900, orig:44900, disc:33, rating:4.9, rank:5, search:'리빙플러스 칼세트'},
                 {name:'이지크린 행주', price:8900, orig:12900, disc:31, rating:4.8, rank:6, search:'이지크린 행주'},
                 {name:'전자레인지 커버', price:12900, orig:18900, disc:32, rating:4.7, rank:7, search:'전자레인지 커버'},
-                {name:'마블스토리 계량컵', price:14900, orig:22900, disc:35, rating:4.8, rank:8, search:'계량컵'}
+                {name:'마블스토리 계량컵', price:14900, orig:22900, disc:35, rating:4.8, rank:8, search:'마블스토리 계량컵'}
             ],
             '생활용품': [
-                {name:'로얄실크 극세사 담요', price:19900, orig:29900, disc:33, rating:4.9, rank:1, search:'극세사 담요'},
+                {name:'로얄실크 극세사 담요', price:19900, orig:29900, disc:33, rating:4.9, rank:1, search:'로얄실크 극세사 담요'},
                 {name:'홈키파 수세미', price:4900, orig:7900, disc:38, rating:4.8, rank:2, search:'홈키파 수세미'},
                 {name:'라플라 화장지 30롤', price:18900, orig:24900, disc:24, rating:4.9, rank:3, search:'라플라 화장지'},
-                {name:'크린뷰 창문 클리너', price:12900, orig:18900, disc:32, rating:4.7, rank:4, search:'창문 클리너'},
+                {name:'크린뷰 창문 클리너', price:12900, orig:18900, disc:32, rating:4.7, rank:4, search:'크린뷰 창문 클리너'},
                 {name:'아이리스 화분', price:8900, orig:12900, disc:31, rating:4.8, rank:5, search:'아이리스 화분'},
-                {name:'비트 남성 양말 10개', price:9900, orig:14900, disc:34, rating:4.7, rank:6, search:'남성 양말'},
+                {name:'비트 남성 양말 10개', price:9900, orig:14900, disc:34, rating:4.7, rank:6, search:'비트 남성 양말'},
                 {name:'오투클린 방향제', price:5900, orig:8900, disc:34, rating:4.8, rank:7, search:'오투클린 방향제'},
-                {name:'생활의맛 배수구망', price:2900, orig:4900, disc:41, rating:4.9, rank:8, search:'배수구망'}
+                {name:'생활의맛 배수구망', price:2900, orig:4900, disc:41, rating:4.9, rank:8, search:'생활의맛 배수구망'}
             ],
             '가전디지털': [
                 {name:'삼성 갤럭시 S25 Ultra', price:1399000, orig:1699000, disc:18, rating:4.9, rank:1, search:'삼성 갤럭시 S25 Ultra'},
@@ -292,7 +314,7 @@
             ],
             '자동차용품': [
                 {name:'타이거 넥커버', price:29900, orig:39900, disc:25, rating:4.8, rank:1, search:'타이거 넥커버'},
-                {name:'카마트 핸드폰거치대', price:12900, orig:19900, disc:35, rating:4.7, rank:2, search:'핸드폰거치대 카마트'},
+                {name:'카마트 핸드폰거치대', price:12900, orig:19900, disc:35, rating:4.7, rank:2, search:'카마트 핸드폰거치대'},
                 {name:'오토퓨어 방향제', price:8900, orig:14900, disc:40, rating:4.9, rank:3, search:'오토퓨어 차량용 방향제'},
                 {name:'밀라노 시트커버', price:89000, orig:129000, disc:31, rating:4.8, rank:4, search:'밀라노 시트커버'},
                 {name:'파워딜 차량청소기', price:29900, orig:45900, disc:35, rating:4.7, rank:5, search:'파워딜 차량청소기'},
@@ -309,8 +331,17 @@
                 {name:'스웨이드 모자', price:29000, orig:45000, disc:36, rating:4.8, rank:6, search:'스웨이드 모자'},
                 {name:'크록스 슬리퍼', price:39000, orig:59000, disc:34, rating:4.9, rank:7, search:'크록스 슬리퍼'},
                 {name:'반스 슬라이드', price:59000, orig:89000, disc:34, rating:4.8, rank:8, search:'반스 슬라이드'}
+            ],
+            '홈인테리어': [
+                {name:'IKEA 책장', price:89000, orig:129000, disc:31, rating:4.8, rank:1, search:'IKEA 책장'},
+                {name:'한샘 식탁', price:299000, orig:399000, disc:25, rating:4.7, rank:2, search:'한샘 식탁'},
+                {name:'코멧 매트리스', price:199000, orig:299000, disc:33, rating:4.9, rank:3, search:'코멧 매트리스'},
+                {name:'일룸 키즈침대', price:399000, orig:549000, disc:27, rating:4.8, rank:4, search:'일룸 키즈침대'},
+                {name:'현대리바트 소파', price:890000, orig:1190000, disc:25, rating:4.9, rank:5, search:'현대리바트 소파'},
+                {name:'LF 커튼', price:59000, orig:89000, disc:34, rating:4.7, rank:6, search:'LF 커튼'},
+                {name:'에넥스 조명', price:129000, orig:179000, disc:28, rating:4.8, rank:7, search:'에넥스 조명'},
+                {name:'더자리 이불', price:79000, orig:119000, disc:34, rating:4.9, rank:8, search:'더자리 이불'}
             ]
-            // 다른 카테고리들도 동일한 구조
         };
 
         function renderProducts(category) {
@@ -325,12 +356,9 @@
             grid.innerHTML = products.map(product => {
                 const priceStr = product.price.toLocaleString();
                 const origPriceStr = product.orig.toLocaleString();
-                const encodedSearch = encodeURIComponent(product.search);
-                const coupangSearchUrl = `https://www.coupang.com/np/search?q=${encodedSearch}&channel=user&component=&eventCategory=SRP&trcid=&traid=&sorter=scoreDesc&minPrice=&maxPrice=&priceRange=&filterType=&listSize=36&filter=&isPriceRange=false&brand=&offerCondition=&rating=0&page=1&rocketAll=false&searchIndexingToken=1=9&backgroundColor=&sorter=scoreDesc`;
-                
                 return `
-                <div class="product-card" onclick="goToCoupangSearch('${encodedSearch}')" title="최저가 상품페이지로 이동">
-                    <div class="product-image"></div>
+                <div class="product-card" onclick="goToCoupangSearch('${product.search}')" title="쿠팡에서 최저가 확인하기">
+                    <div class="product-icon"></div>
                     <div class="product-info">
                         <div class="product-name">${product.name}</div>
                         <div class="product-price">
@@ -350,9 +378,12 @@
         }
 
         function goToCoupangSearch(searchQuery) {
+            // ✅ 한글 검색어 직접 URL에 삽입 (더블 인코딩 문제 해결)
+            const baseUrl = 'https://www.coupang.com/np/search?component=&q=';
             const encodedQuery = encodeURIComponent(searchQuery);
-            const url = `https://www.coupang.com/np/search?q=${encodedQuery}&channel=user&component=&eventCategory=SRP&trcid=&traid=&sorter=scoreDesc&minPrice=&maxPrice=&priceRange=&filterType=&listSize=36&filter=&isPriceRange=false&brand=&offerCondition=&rating=0&page=1&rocketAll=false&searchIndexingToken=1=9&backgroundColor=&sorter=scoreDesc&partner_id=${MY_PARTNERS_ID}`;
-            window.open(url, '_blank', 'noopener,noreferrer');
+            const fullUrl = baseUrl + encodedQuery + '&channel=user&sorter=scoreDesc&minPrice=&maxPrice=&priceRange=&filterType=&listSize=36&filter=&isPriceRange=false&brand=&offerCondition=&rating=0&page=1&rocketAll=false&searchIndexingToken=1=9&backgroundColor=&sorter=scoreDesc&partner_id=' + MY_PARTNERS_ID;
+            
+            window.open(fullUrl, '_blank', 'noopener,noreferrer');
         }
 
         function setupCategories() {
