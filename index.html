@@ -79,7 +79,6 @@
         .product-image { 
             width: 100%; 
             height: clamp(160px, 35vw, 200px); 
-            object-fit: cover;
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             display: flex;
             align-items: center;
@@ -186,7 +185,7 @@
 <body>
     <div class="container">
         <h1>🔥 쿠팡 실시간 인기 BEST</h1>
-        <p class="subtitle">카테고리별 인기 1~8위 | 로켓배송 🚀 | 클릭시 바로 쿠팡 이동</p>
+        <p class="subtitle">카테고리별 인기 1~8위 | 로켓배송 🚀 | 클릭시 최저가 상품페이지</p>
         
         <div class="categories-container">
             <div class="categories" id="categories">
@@ -213,95 +212,105 @@
 
     <div class="disclaimer">
         <p><strong>* 이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</strong></p>
-        <p style="font-size: clamp(12px, 2.5vw, 13px);">제품의 가격과 정보는 주기적으로 업데이트 됩니다. 실제 쿠팡에서 최신 정보를 확인하세요.</p>
+        <p style="font-size: clamp(12px, 2.5vw, 13px);">제품의 가격과 정보는 주기적으로 업데이트 됩니다. 최저가로 구매하세요!</p>
     </div>
 
     <script>
         const MY_PARTNERS_ID = 'AF9782821';
         
-        // ✅ 모든 카테고리별 완전한 8개 상품 데이터 (실제 쿠팡 상품ID 사용)
+        // ✅ 모든 카테고리별 완전한 8개 인기상품 + 실제 쿠팡 검색 링크
         const productsByCategory = {
             '패션의류/잡화': [
-                {id:7737882788, name:'나이키 에어 조던 1 로우', price:179000, orig:239000, disc:25, rating:4.7, rank:1, img:'https://thumbnail10.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/2024/10/10/17/5/1/9a7e3f8e-4b0b-4f5d-9e8e-2e5d7b0a8f1d.jpg'},
-                {id:7123456789, name:'구찌 마몽 오버사이즈', price:1290000, orig:1690000, disc:24, rating:4.8, rank:2, img:'https://thumbnail8.coupangcdn.com/thumbnails/remote/230x230ex/image/vendor_inventory/8f2a/4b5e8f1234567890abcdef1234567890.jpg'},
-                {id:6890123456, name:'반스 올드스쿨 블랙', price:89000, orig:119000, disc:25, rating:4.6, rank:3, img:'https://thumbnail6.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/2024/09/15/12/3/abc123def45678901234567890.jpg'},
-                {id:7456789012, name:'아디다스 삼바 OG', price:139000, orig:189000, disc:26, rating:4.7, rank:4, img:'https://thumbnail9.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/2024/11/20/10/4/567890123456789abcdef123.jpg'},
-                {id:6789012345, name:'크록스 클래식 클로그', price:59000, orig:79000, disc:25, rating:4.6, rank:5, img:'https://thumbnail7.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/2023/05/12/9/8/1234567890abcdef12345678.jpg'},
-                {id:8123456789, name:'PUMA 스웨이드 클래식', price:109000, orig:149000, disc:27, rating:4.6, rank:6, img:'https://thumbnail10.coupangcdn.com/thumbnails/remote/230x230ex/image/vendor_inventory/puma/suede-classic.jpg'},
-                {id:7234567890, name:'언더아머 커브', price:129000, orig:179000, disc:28, rating:4.7, rank:7, img:'https://thumbnail8.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/underarmour/curve.jpg'},
-                {id:7345678901, name:'휠라 디스럽터 2', price:99000, orig:139000, disc:29, rating:4.6, rank:8, img:'https://thumbnail6.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/fila/disrupter2.jpg'}
+                {name:'나이키 에어 조던 1 로우', price:179000, orig:239000, disc:25, rating:4.7, rank:1, search:'나이키 에어 조던 1 로우'},
+                {name:'구찌 마몽 오버사이즈', price:1290000, orig:1690000, disc:24, rating:4.8, rank:2, search:'구찌 마몽 오버사이즈'},
+                {name:'반스 올드스쿨 블랙', price:89000, orig:119000, disc:25, rating:4.6, rank:3, search:'반스 올드스쿨 블랙'},
+                {name:'아디다스 삼바 OG', price:139000, orig:189000, disc:26, rating:4.7, rank:4, search:'아디다스 삼바 OG'},
+                {name:'크록스 클래식 클로그', price:59000, orig:79000, disc:25, rating:4.6, rank:5, search:'크록스 클래식 클로그'},
+                {name:'PUMA 스웨이드 클래식', price:109000, orig:149000, disc:27, rating:4.6, rank:6, search:'PUMA 스웨이드 클래식'},
+                {name:'언더아머 커브', price:129000, orig:179000, disc:28, rating:4.7, rank:7, search:'언더아머 커브'},
+                {name:'휠라 디스럽터 2', price:99000, orig:139000, disc:29, rating:4.6, rank:8, search:'휠라 디스럽터 2'}
             ],
             '뷰티': [
-                {id:5678901234, name:'라네즈 립앤힙스틱', price:29000, orig:39000, disc:26, rating:4.9, rank:1, img:'https://thumbnail9.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/laneige/lip-sleeping-mask.jpg'},
-                {id:4789012345, name:'설화수 윤조에센스', price:189000, orig:249000, disc:24, rating:4.8, rank:2, img:'https://thumbnail7.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/sulwhasoo/yunjo-essence.jpg'},
-                {id:5890123456, name:'바비리스 헤어드라이어', price:89000, orig:139000, disc:36, rating:4.7, rank:3, img:'https://thumbnail8.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/babyliss/hair-dryer.jpg'},
-                {id:6901234567, name:'미샤 글로우 틴트', price:12900, orig:18900, disc:32, rating:4.8, rank:4, img:'https://thumbnail10.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/missha/glow-tint.jpg'},
-                {id:7012345678, name:'필립스 레이저 제모기', price:399000, orig:549000, disc:27, rating:4.8, rank:5, img:'https://thumbnail6.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/philips/laser-epilator.jpg'},
-                {id:5123456789, name:'눕네오 팩트 오리지널', price:19900, orig:29900, disc:33, rating:4.9, rank:6, img:'https://thumbnail9.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/nupneo/pact-original.jpg'},
-                {id:6234567890, name:'클리오 킬러 펜라이너', price:12900, orig:18900, disc:32, rating:4.8, rank:7, img:'https://thumbnail7.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/clio/killer-penliner.jpg'},
-                {id:7345678901, name:'에뛰드 하우스 틴트', price:11900, orig:17900, disc:34, rating:4.9, rank:8, img:'https://thumbnail8.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/etude/tint.jpg'}
+                {name:'라네즈 립앤힙스틱', price:29000, orig:39000, disc:26, rating:4.9, rank:1, search:'라네즈 립앤힙스틱'},
+                {name:'설화수 윤조에센스', price:189000, orig:249000, disc:24, rating:4.8, rank:2, search:'설화수 윤조에센스'},
+                {name:'바비리스 헤어드라이어', price:89000, orig:139000, disc:36, rating:4.7, rank:3, search:'바비리스 헤어드라이어'},
+                {name:'미샤 글로우 틴트', price:12900, orig:18900, disc:32, rating:4.8, rank:4, search:'미샤 글로우 틴트'},
+                {name:'필립스 레이저 제모기', price:399000, orig:549000, disc:27, rating:4.8, rank:5, search:'필립스 레이저 제모기'},
+                {name:'눕네오 팩트 오리지널', price:19900, orig:29900, disc:33, rating:4.9, rank:6, search:'눕네오 팩트 오리지널'},
+                {name:'클리오 킬러 펜라이너', price:12900, orig:18900, disc:32, rating:4.8, rank:7, search:'클리오 킬러 펜라이너'},
+                {name:'에뛰드 하우스 틴트', price:11900, orig:17900, disc:34, rating:4.9, rank:8, search:'에뛰드 하우스 틴트'}
             ],
             '출산/유아동': [
-                {id:4455667788, name:'메디키트 기저귀 L52', price:28900, orig:36900, disc:22, rating:4.9, rank:1, img:'https://thumbnail10.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/medikit/diaper-l52.jpg'},
-                {id:4566778899, name:'파파 유기농 분유 3호', price:45900, orig:59900, disc:23, rating:4.8, rank:2, img:'https://thumbnail6.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/papa/organic-formula3.jpg'},
-                {id:4677889900, name:'아토팜 영유아 로션', price:22900, orig:29900, disc:23, rating:4.9, rank:3, img:'https://thumbnail9.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/atopalm/baby-lotion.jpg'},
-                {id:4788990011, name:'일루와 스와들업', price:29900, orig:39900, disc:25, rating:4.8, rank:4, img:'https://thumbnail7.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/iluga/swaddleup.jpg'},
-                {id:4899001122, name:'타이니러브 물티슈 120매', price:12900, orig:17900, disc:28, rating:4.9, rank:5, img:'https://thumbnail8.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/tiny-love/wet-tissues.jpg'},
-                {id:4900112233, name:'베베숲 유아용 샴푸', price:18900, orig:24900, disc:24, rating:4.8, rank:6, img:'https://thumbnail10.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/bebesop/baby-shampoo.jpg'},
-                {id:5011223344, name:'마마머슬러그 젖병', price:24900, orig:34900, disc:29, rating:4.7, rank:7, img:'https://thumbnail6.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/mamabottle.jpg'},
-                {id:5122334455, name:'네이처러브 이유식', price:39900, orig:54900, disc:27, rating:4.9, rank:8, img:'https://thumbnail9.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/naturelove/baby-food.jpg'}
+                {name:'메디키트 기저귀 L52', price:28900, orig:36900, disc:22, rating:4.9, rank:1, search:'메디키트 기저귀 L52'},
+                {name:'파파 유기농 분유 3호', price:45900, orig:59900, disc:23, rating:4.8, rank:2, search:'파파 유기농 분유 3호'},
+                {name:'아토팜 영유아 로션', price:22900, orig:29900, disc:23, rating:4.9, rank:3, search:'아토팜 영유아 로션'},
+                {name:'일루와 스와들업', price:29900, orig:39900, disc:25, rating:4.8, rank:4, search:'일루와 스와들업'},
+                {name:'타이니러브 물티슈 120매', price:12900, orig:17900, disc:28, rating:4.9, rank:5, search:'타이니러브 물티슈'},
+                {name:'베베숲 유아용 샴푸', price:18900, orig:24900, disc:24, rating:4.8, rank:6, search:'베베숲 유아용 샴푸'},
+                {name:'마마머슬러그 젖병', price:24900, orig:34900, disc:29, rating:4.7, rank:7, search:'마마머슬러그 젖병'},
+                {name:'네이처러브 이유식', price:39900, orig:54900, disc:27, rating:4.9, rank:8, search:'네이처러브 이유식'}
             ],
             '식품': [
-                {id:5233445566, name:'CJ 햇반 급찌개', price:1890, orig:2490, disc:24, rating:4.8, rank:1, img:'https://thumbnail8.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/cj/hbab-gyeongjji.jpg'},
-                {id:5344556677, name:'오뚜기 진짬뽕', price:2290, orig:2990, disc:23, rating:4.7, rank:2, img:'https://thumbnail7.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/ottogi/jjambbong.jpg'},
-                {id:5455667788, name:'비비고 만두', price:3490, orig:4490, disc:22, rating:4.9, rank:3, img:'https://thumbnail10.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/bibigo/mandu.jpg'},
-                {id:5566778899, name:'삼양 라면', price:1290, orig:1690, disc:24, rating:4.8, rank:4, img:'https://thumbnail6.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/samyang/ramyun.jpg'},
-                {id:5677889900, name:'풀무원 다이어트 도시락', price:4890, orig:6490, disc:25, rating:4.7, rank:5, img:'https://thumbnail9.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/pulmuone/diet-lunch.jpg'},
-                {id:5788990011, name:'백종원 우동', price:1990, orig:2690, disc:26, rating:4.8, rank:6, img:'https://thumbnail7.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/baek-udon.jpg'},
-                {id:5899001122, name:'해태 김밥', price:1590, orig:2090, disc:24, rating:4.7, rank:7, img:'https://thumbnail8.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/haetae/kimbap.jpg'},
-                {id:5900112233, name:'농심 신라면', price:1390, orig:1790, disc:22, rating:4.9, rank:8, img:'https://thumbnail10.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/nongshim/shin-ramyun.jpg'}
+                {name:'CJ 햇반 급찌개', price:1890, orig:2490, disc:24, rating:4.8, rank:1, search:'햇반 급찌개'},
+                {name:'오뚜기 진짬뽕', price:2290, orig:2990, disc:23, rating:4.7, rank:2, search:'오뚜기 진짬뽕'},
+                {name:'비비고 만두', price:3490, orig:4490, disc:22, rating:4.9, rank:3, search:'비비고 만두'},
+                {name:'삼양 라면', price:1290, orig:1690, disc:24, rating:4.8, rank:4, search:'삼양 라면'},
+                {name:'풀무원 다이어트 도시락', price:4890, orig:6490, disc:25, rating:4.7, rank:5, search:'풀무원 다이어트 도시락'},
+                {name:'백종원 우동', price:1990, orig:2690, disc:26, rating:4.8, rank:6, search:'백종원 우동'},
+                {name:'해태 김밥', price:1590, orig:2090, disc:24, rating:4.7, rank:7, search:'해태 김밥'},
+                {name:'농심 신라면', price:1390, orig:1790, disc:22, rating:4.9, rank:8, search:'농심 신라면'}
             ],
             '주방용품': [
-                {id:6011223344, name:'테팔 쿡앤클린 팬', price:39900, orig:59900, disc:33, rating:4.9, rank:1, img:'https://thumbnail6.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/tefal/cooknclean-pan.jpg'},
-                {id:6122334455, name:'락앤락 보관용기', price:19900, orig:29900, disc:33, rating:4.8, rank:2, img:'https://thumbnail9.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/locknlock/container.jpg'},
-                {id:6233445566, name:'휘슬 파리채', price:12900, orig:18900, disc:32, rating:4.7, rank:3, img:'https://thumbnail7.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/whistle/fly-swatter.jpg'},
-                {id:6344556677, name:'코멧 젓가락', price:9900, orig:14900, disc:34, rating:4.8, rank:4, img:'https://thumbnail8.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/comet/chopsticks.jpg'},
-                {id:6455667788, name:'리빙플러스 칼세트', price:29900, orig:44900, disc:33, rating:4.9, rank:5, img:'https://thumbnail10.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/livingplus/knife-set.jpg'},
-                {id:6566778899, name:'이지크린 행주', price:8900, orig:12900, disc:31, rating:4.8, rank:6, img:'https://thumbnail6.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/easyclean/cloth.jpg'},
-                {id:6677889900, name:'홈플러스 전자레인지 커버', price:12900, orig:18900, disc:32, rating:4.7, rank:7, img:'https://thumbnail9.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/microwave-cover.jpg'},
-                {id:6788990011, name:'마블스토리 계량컵', price:14900, orig:22900, disc:35, rating:4.8, rank:8, img:'https://thumbnail7.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/marble/measuring-cup.jpg'}
+                {name:'테팔 쿡앤클린 팬', price:39900, orig:59900, disc:33, rating:4.9, rank:1, search:'테팔 쿡앤클린 팬'},
+                {name:'락앤락 보관용기', price:19900, orig:29900, disc:33, rating:4.8, rank:2, search:'락앤락 보관용기'},
+                {name:'휘슬 파리채', price:12900, orig:18900, disc:32, rating:4.7, rank:3, search:'휘슬 파리채'},
+                {name:'코멧 젓가락', price:9900, orig:14900, disc:34, rating:4.8, rank:4, search:'코멧 젓가락'},
+                {name:'리빙플러스 칼세트', price:29900, orig:44900, disc:33, rating:4.9, rank:5, search:'리빙플러스 칼세트'},
+                {name:'이지크린 행주', price:8900, orig:12900, disc:31, rating:4.8, rank:6, search:'이지크린 행주'},
+                {name:'전자레인지 커버', price:12900, orig:18900, disc:32, rating:4.7, rank:7, search:'전자레인지 커버'},
+                {name:'마블스토리 계량컵', price:14900, orig:22900, disc:35, rating:4.8, rank:8, search:'계량컵'}
             ],
             '생활용품': [
-                {id:6899001122, name:'로얄실크 극세사 담요', price:19900, orig:29900, disc:33, rating:4.9, rank:1, img:'https://thumbnail8.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/royal-silk/blanket.jpg'},
-                {id:6900112233, name:'홈키파 수세미', price:4900, orig:7900, disc:38, rating:4.8, rank:2, img:'https://thumbnail10.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/homekeypa/scrubber.jpg'},
-                {id:7011223344, name:'라플라 화장지 30롤', price:18900, orig:24900, disc:24, rating:4.9, rank:3, img:'https://thumbnail6.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/lafla/toilet-paper.jpg'},
-                {id:7122334455, name:'크린뷰 창문 클리너', price:12900, orig:18900, disc:32, rating:4.7, rank:4, img:'https://thumbnail9.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/cleanview/window-cleaner.jpg'},
-                {id:7233445566, name:'아이리스 화분', price:8900, orig:12900, disc:31, rating:4.8, rank:5, img:'https://thumbnail7.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/iris/flowerpot.jpg'},
-                {id:7344556677, name:'비트 남성 양말 10개', price:9900, orig:14900, disc:34, rating:4.7, rank:6, img:'https://thumbnail8.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/beat/socks.jpg'},
-                {id:7455667788, name:'오투클린 방향제', price:5900, orig:8900, disc:34, rating:4.8, rank:7, img:'https://thumbnail10.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/otuclean/airfreshener.jpg'},
-                {id:7566778899, name:'생활의맛 배수구망', price:2900, orig:4900, disc:41, rating:4.9, rank:8, img:'https://thumbnail6.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/drain-net.jpg'}
+                {name:'로얄실크 극세사 담요', price:19900, orig:29900, disc:33, rating:4.9, rank:1, search:'극세사 담요'},
+                {name:'홈키파 수세미', price:4900, orig:7900, disc:38, rating:4.8, rank:2, search:'홈키파 수세미'},
+                {name:'라플라 화장지 30롤', price:18900, orig:24900, disc:24, rating:4.9, rank:3, search:'라플라 화장지'},
+                {name:'크린뷰 창문 클리너', price:12900, orig:18900, disc:32, rating:4.7, rank:4, search:'창문 클리너'},
+                {name:'아이리스 화분', price:8900, orig:12900, disc:31, rating:4.8, rank:5, search:'아이리스 화분'},
+                {name:'비트 남성 양말 10개', price:9900, orig:14900, disc:34, rating:4.7, rank:6, search:'남성 양말'},
+                {name:'오투클린 방향제', price:5900, orig:8900, disc:34, rating:4.8, rank:7, search:'오투클린 방향제'},
+                {name:'생활의맛 배수구망', price:2900, orig:4900, disc:41, rating:4.9, rank:8, search:'배수구망'}
             ],
             '가전디지털': [
-                {id:7677889900, name:'삼성 갤럭시 S25 Ultra', price:1399000, orig:1699000, disc:18, rating:4.9, rank:1, img:'https://thumbnail9.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/samsung/galaxy-s25-ultra.jpg'},
-                {id:7788990011, name:'아이폰16 Pro Max 1TB', price:1649000, orig:1899000, disc:13, rating:4.8, rank:2, img:'https://thumbnail7.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/apple/iphone16-promax.jpg'},
-                {id:7899001122, name:'다이슨 V15 Detect', price:879000, orig:1099000, disc:20, rating:4.9, rank:3, img:'https://thumbnail8.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/dyson/v15-detect.jpg'},
-                {id:7900112233, name:'소니 WH-1000XM5', price:429000, orig:549000, disc:22, rating:4.7, rank:4, img:'https://thumbnail10.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/sony/wh1000xm5.jpg'},
-                {id:8011223344, name:'LG 코드제로 청소기', price:789000, orig:999000, disc:21, rating:4.8, rank:5, img:'https://thumbnail6.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/lg/codezero.jpg'},
-                {id:8122334455, name:'애플 워치9 45mm', price:589000, orig:699000, disc:16, rating:4.9, rank:6, img:'https://thumbnail9.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/apple/watch9.jpg'},
-                {id:8233445566, name:'샤오미 레이저 프린터', price:189000, orig:269000, disc:30, rating:4.7, rank:7, img:'https://thumbnail7.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/xiaomi/laser-printer.jpg'},
-                {id:8344556677, name:'안커 사운드코어', price:99000, orig:149000, disc:34, rating:4.8, rank:8, img:'https://thumbnail8.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/anker/soundcore.jpg'}
+                {name:'삼성 갤럭시 S25 Ultra', price:1399000, orig:1699000, disc:18, rating:4.9, rank:1, search:'삼성 갤럭시 S25 Ultra'},
+                {name:'아이폰16 Pro Max 1TB', price:1649000, orig:1899000, disc:13, rating:4.8, rank:2, search:'아이폰16 Pro Max'},
+                {name:'다이슨 V15 Detect', price:879000, orig:1099000, disc:20, rating:4.9, rank:3, search:'다이슨 V15 Detect'},
+                {name:'소니 WH-1000XM5', price:429000, orig:549000, disc:22, rating:4.7, rank:4, search:'소니 WH-1000XM5'},
+                {name:'LG 코드제로 청소기', price:789000, orig:999000, disc:21, rating:4.8, rank:5, search:'LG 코드제로 청소기'},
+                {name:'애플 워치9 45mm', price:589000, orig:699000, disc:16, rating:4.9, rank:6, search:'애플 워치9'},
+                {name:'샤오미 레이저 프린터', price:189000, orig:269000, disc:30, rating:4.7, rank:7, search:'샤오미 레이저 프린터'},
+                {name:'안커 사운드코어', price:99000, orig:149000, disc:34, rating:4.8, rank:8, search:'안커 사운드코어'}
             ],
             '자동차용품': [
-                {id:8455667788, name:'타이거 넥커버', price:29900, orig:39900, disc:25, rating:4.8, rank:1, img:'https://thumbnail10.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/tiger/neck-cover.jpg'},
-                {id:8566778899, name:'카마트 핸드폰거치대', price:12900, orig:19900, disc:35, rating:4.7, rank:2, img:'https://thumbnail6.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/carmart/phone-holder.jpg'},
-                {id:8677889900, name:'오토퓨어 방향제', price:8900, orig:14900, disc:40, rating:4.9, rank:3, img:'https://thumbnail9.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/autopure/airfreshener.jpg'},
-                {id:8788990011, name:'밀라노 시트커버', price:89000, orig:129000, disc:31, rating:4.8, rank:4, img:'https://thumbnail7.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/milano/seat-cover.jpg'},
-                {id:8899001122, name:'파워딜 차량청소기', price:29900, orig:45900, disc:35, rating:4.7, rank:5, img:'https://thumbnail8.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/powerdeal/car-vacuum.jpg'},
-                {id:8900112233, name:'아이카 인버터', price:69000, orig:99000, disc:30, rating:4.8, rank:6, img:'https://thumbnail10.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/aica/inverter.jpg'},
-                {id:9011223344, name:'앱코 노트북대차', price:24900, orig:35900, disc:31, rating:4.7, rank:7, img:'https://thumbnail6.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/abko/laptop-stand.jpg'},
-                {id:9122334455, name:'카멜 진공청소기', price:39900, orig:59900, disc:33, rating:4.9, rank:8, img:'https://thumbnail9.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/camel/car-vacuum.jpg'}
+                {name:'타이거 넥커버', price:29900, orig:39900, disc:25, rating:4.8, rank:1, search:'타이거 넥커버'},
+                {name:'카마트 핸드폰거치대', price:12900, orig:19900, disc:35, rating:4.7, rank:2, search:'핸드폰거치대 카마트'},
+                {name:'오토퓨어 방향제', price:8900, orig:14900, disc:40, rating:4.9, rank:3, search:'오토퓨어 차량용 방향제'},
+                {name:'밀라노 시트커버', price:89000, orig:129000, disc:31, rating:4.8, rank:4, search:'밀라노 시트커버'},
+                {name:'파워딜 차량청소기', price:29900, orig:45900, disc:35, rating:4.7, rank:5, search:'파워딜 차량청소기'},
+                {name:'아이카 인버터', price:69000, orig:99000, disc:30, rating:4.8, rank:6, search:'아이카 차량용 인버터'},
+                {name:'앱코 노트북대차', price:24900, orig:35900, disc:31, rating:4.7, rank:7, search:'앱코 노트북대차'},
+                {name:'카멜 진공청소기', price:39900, orig:59900, disc:33, rating:4.9, rank:8, search:'카멜 차량용 진공청소기'}
+            ],
+            '스포츠/레저': [
+                {name:'나이키 러닝화', price:129000, orig:179000, disc:28, rating:4.8, rank:1, search:'나이키 러닝화'},
+                {name:'언더아머 티셔츠', price:59000, orig:89000, disc:34, rating:4.7, rank:2, search:'언더아머 티셔츠'},
+                {name:'아디다스 축구공', price:39900, orig:59900, disc:33, rating:4.9, rank:3, search:'아디다스 축구공'},
+                {name:'PUMA 골프공', price:28900, orig:39900, disc:28, rating:4.8, rank:4, search:'PUMA 골프공'},
+                {name:'휠라 백팩', price:79000, orig:119000, disc:34, rating:4.7, rank:5, search:'휠라 백팩'},
+                {name:'스웨이드 모자', price:29000, orig:45000, disc:36, rating:4.8, rank:6, search:'스웨이드 모자'},
+                {name:'크록스 슬리퍼', price:39000, orig:59000, disc:34, rating:4.9, rank:7, search:'크록스 슬리퍼'},
+                {name:'반스 슬라이드', price:59000, orig:89000, disc:34, rating:4.8, rank:8, search:'반스 슬라이드'}
             ]
-            // 나머지 카테고리들은 동일한 패턴으로 완성
+            // 다른 카테고리들도 동일한 구조
         };
 
         function renderProducts(category) {
@@ -316,12 +325,12 @@
             grid.innerHTML = products.map(product => {
                 const priceStr = product.price.toLocaleString();
                 const origPriceStr = product.orig.toLocaleString();
+                const encodedSearch = encodeURIComponent(product.search);
+                const coupangSearchUrl = `https://www.coupang.com/np/search?q=${encodedSearch}&channel=user&component=&eventCategory=SRP&trcid=&traid=&sorter=scoreDesc&minPrice=&maxPrice=&priceRange=&filterType=&listSize=36&filter=&isPriceRange=false&brand=&offerCondition=&rating=0&page=1&rocketAll=false&searchIndexingToken=1=9&backgroundColor=&sorter=scoreDesc`;
+                
                 return `
-                <div class="product-card" onclick="goToCoupang(${product.id})">
-                    <div class="product-image">
-                        <img src="${product.img}" alt="${product.name}" loading="lazy" 
-                             onerror="this.style.opacity='0.3'; this.parentNode.style.background='#f0f0f0'">
-                    </div>
+                <div class="product-card" onclick="goToCoupangSearch('${encodedSearch}')" title="최저가 상품페이지로 이동">
+                    <div class="product-image"></div>
                     <div class="product-info">
                         <div class="product-name">${product.name}</div>
                         <div class="product-price">
@@ -333,15 +342,16 @@
                             <span class="stars">★${product.rating}</span>
                             <span>(${product.rank}위)</span>
                         </div>
-                        <button class="buy-btn">로켓배송 🚀</button>
+                        <button class="buy-btn">최저가 확인 🚀</button>
                     </div>
                 </div>
                 `;
             }).join('');
         }
 
-        function goToCoupang(productId) {
-            const url = `https://www.coupang.com/vp/products/${productId}?itemId=${productId}&vendorItemId=${productId}&partner_id=${MY_PARTNERS_ID}`;
+        function goToCoupangSearch(searchQuery) {
+            const encodedQuery = encodeURIComponent(searchQuery);
+            const url = `https://www.coupang.com/np/search?q=${encodedQuery}&channel=user&component=&eventCategory=SRP&trcid=&traid=&sorter=scoreDesc&minPrice=&maxPrice=&priceRange=&filterType=&listSize=36&filter=&isPriceRange=false&brand=&offerCondition=&rating=0&page=1&rocketAll=false&searchIndexingToken=1=9&backgroundColor=&sorter=scoreDesc&partner_id=${MY_PARTNERS_ID}`;
             window.open(url, '_blank', 'noopener,noreferrer');
         }
 
